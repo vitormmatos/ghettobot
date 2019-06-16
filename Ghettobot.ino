@@ -1,76 +1,103 @@
 #include "GhettobotMotors.h"
+#include "GhettobotDistanceSensor.h"
 #include <Thread.h>
 #include <ThreadController.h>
 
+ThreadController thController = ThreadController();
+Thread seekThread = Thread();
+Thread attackThread = Thread();
+Thread turnLeftThread = Thread();
+Thread turnRightThread = Thread();
+Thread moveBackwardsThread = Thread();
+
 GhettobotMotors motors(5, 7, 6, 8);
+GhettobotDistanceSensor distances(1, 0, 20000UL);
+bool lineFrontLeftValue;
+bool lineFrontRightValue;
 
-// Create a couple of constants for our pins.
-const int ledPin = 13;
-const int buttonPin = A0;
-const int buttonPin1 = A1;
-int forwardButton = 0;
-int leftRightButton = 0;
+int checkLine(){
+  if(analogRead(A0) > 700 && analogRead(A1) > 700){
+    return 0;
+  }else if (analogRead(A0) < 700 && analogRead(A1) < 700){
+    return 1;
+  }else if (analogRead(A0) > 700 && analogRead(A1) < 700){
+    return 2;  
+  }else if (analogRead(A0) < 700 && analogRead(A1) > 700){
+    return 3;
+  }else
+    return -1;
+} 
 
-ThreadController control = ThreadController();
-Thread forward = Thread();
-Thread leftRight = Thread();
-
-void moveForward(){
-  if( digitalRead(buttonPin) == LOW){
-    switch (forwardButton){
-      case 0:
-        digitalWrite(ledPin, HIGH);
-        motors.drive(100, 1);
-        forwardButton = 1;
-        delay(1000);
-      break;
-      case 1:
-        digitalWrite(ledPin, LOW);
-        motors.drive(0, 1);
-        forwardButton = 0;
-        delay(1000);
-      break;
-    }
+void attack()
+{
+  if (distances.read() <= 30){
+    motors.leftDrive(100, 0);
+    motors.rightDrive(100, 1);
+    delay(100);
   }
 }
 
-void moveRightLeft(){
+void seek(){
+  if (distances.read() > 30 && checkLine()==0){
+    motors.leftDrive(100, 1);
+    motors.rightDrive(100, 1);
+    delay(30);
+    motors.leftStop();
+    motors.rightStop();
+    delay(120);
+  }
+}
 
-  if( digitalRead(buttonPin1) == LOW){
-    switch (leftRightButton){
-      case 0:
-        digitalWrite(ledPin, HIGH);
-        motors.rightDrive(100, 1);
-        leftRightButton = 1;
-        delay(1000);
-      break;
-      case 1:
-        motors.rightDrive(0, 1);
-        leftRightButton = 2;
-        delay(1000);
-        motors.leftDrive(100, 1);
-        delay(1000);
-      break;
-      case 2:
-        digitalWrite(ledPin, LOW);
-        motors.leftDrive(0, 1);
-        delay(1000);
-      break;
-    }
+void moveBackwards(){
+  if(checkLine()==1){
+    motors.leftDrive(100, 1);
+    motors.rightDrive(100, 0);
+    delay(50);
+  }
+}
+
+void turnRight(){
+  if(checkLine()==2){
+    motors.rightDrive(60, 1);
+    delay(300);
+    motors.rightStop();
+  }
+}
+
+void turnLeft(){
+  if(checkLine()==3){
+    motors.leftDrive(60, 0);
+    delay(300);
+    motors.leftStop();
   }
 }
 
 void setup() {
-  pinMode(buttonPin, INPUT_PULLUP);
-  pinMode(buttonPin1, INPUT_PULLUP);
-  pinMode(ledPin, OUTPUT);
-  forward.onRun(moveForward);
-  control.add(&forward);
-  leftRight.onRun(moveRightLeft);
-  control.add(&leftRight);
+  
+  delay(3000);
+
+  seekThread.onRun(seek);
+  seekThread.setInterval(110);
+  thController.add(&seekThread);
+
+  attackThread.onRun(attack);
+  attackThread.setInterval(120);
+  thController.add(&attackThread);
+
+  turnLeftThread.onRun(turnLeft);
+  turnLeftThread.setInterval(130);
+  thController.add(&turnLeftThread);
+
+  turnRightThread.onRun(turnRight);
+  turnLeftThread.setInterval(130);
+  thController.add(&turnRightThread);
+
+  moveBackwardsThread.onRun(moveBackwards);
+  moveBackwardsThread.setInterval(130);
+  thController.add(&moveBackwardsThread);
 }
 
 
 void loop() {
-  control.run();
+  thController.run();
 }

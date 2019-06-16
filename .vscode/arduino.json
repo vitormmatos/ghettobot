@@ -1,0 +1,6 @@
+{
+    "port": "/dev/cu.usbserial-RCJ_1M8057",
+    "board": "arduino:avr:uno",
+    "programmer": "AVR ISP",
+    "sketch": "Ghettobot.ino"
+}
