@@ -18,19 +18,19 @@ unsigned long GhettobotDistanceSensor::timing() {
   digitalWrite(_pinTrig, HIGH);
   delayMicroseconds(10);
   digitalWrite(_pinTrig, LOW);
-  return pulseIn(_pinEcho, HIGH, _timeout); // duração
+  return pulseIn(_pinEcho, HIGH, _timeout); // duration
 }
 
 unsigned int GhettobotDistanceSensor::read(int unit) {
-  // Retorna a distância da unidade
+  // return the distance in the unit
   return timing() / unit / 2;
 }
 
 unsigned int GhettobotDistanceSensor::read() {
   /*
-   * Caso a unidade de medida não seja passada como parâmetro,
-   * por padrão, será retornada a distância em centimetros.
-   * Para substituir o padrão substitua CM por INCH(polegadas).
+   * If the unit of measure is not passed as a parameter,
+   * by default, it will return the distance in centimeters.
+   * To change the default, replace CM by INCH.
    */
-  return read(CM);
+  return read(CM_DIVISOR);
 }

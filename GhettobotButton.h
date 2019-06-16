@@ -3,7 +3,8 @@
 
 #include <Arduino.h>
 
-// Definição de pinos dos botões
+// Pins definitions
+// Buttons
 #define PIN_BTN0  A0
 #define PIN_BTN1  A1
 
@@ -12,10 +13,7 @@
 class GhettobotButton {
   public:
     GhettobotButton(int pin);  // Constructor
-
-    // Retorna o estado do botão
-    //(Pressionado = HIGH, Solto = LOW)
-    boolean read();
+    boolean read();  // Return the button state(Pressed = HIGH / Released = LOW)
   private:
     int _pin;
 };

@@ -3,15 +3,16 @@
 
 #include <Arduino.h>
 
-// Definição de pinos do Sensor de Distância Ultrassonico
+// Pins definitions
+// Ultrasonic Distance Sensor
 #define PIN_ECHO  2
 #define PIN_TRIG  3
 
-// Valores para operações matemáticas do sensor de distância
+// Distance Sensor divisors values
 #define CM 28
 #define INCH 71
 
-// Essa classe é responsável pelo Sensor de Distância Ultrassonico.
+// This handles the ultrasonic distance sensor.
 class GhettobotDistanceSensor {
   public:
     GhettobotDistanceSensor(int pinEcho, int pinTrig, unsigned long timeout = 20000UL); // Simple constructor

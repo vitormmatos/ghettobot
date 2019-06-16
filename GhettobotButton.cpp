@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 GhettobotButton::GhettobotButton(int pin) {
-  // Atribui o estado padrão do botão para HIGH.
+  // Sets the "default" state of the button to be HIGH.
   _pin = pin;
   pinMode(_pin, INPUT_PULLUP);
 }

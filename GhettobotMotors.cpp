@@ -1,9 +1,16 @@
 #include "GhettobotMotors.h"
 #include <Arduino.h>
 
+// Pins definitions
+// Motors
+#define PIN_ML_PWM   5
+#define PIN_ML_DIR   7
+#define PIN_MR_PWM   6
+#define PIN_MR_DIR   8
+
 // Constructor.
 GhettobotMotors::GhettobotMotors(int pinMLPWM, int pinMLDIR, int pinMRPWM, int pinMRDIR) {
-  // DIR define a direção (forward, reverse); PWM define a velocidade.
+  // DIR defines the direction (forward, reverse); PWM defines the speed.
   _pinMLPWM = pinMLPWM;
   _pinMLDIR = pinMLDIR;
   _pinMRPWM = pinMRPWM;
@@ -15,9 +22,9 @@ GhettobotMotors::GhettobotMotors(int pinMLPWM, int pinMLDIR, int pinMRPWM, int p
   pinMode(_pinMRDIR, OUTPUT);
 }
 
-// Constructor. Basicamente setup de pinos
+// Constructor. Mostly for pin setup;
 GhettobotMotors::GhettobotMotors() {
-    // DIR define a direção (forward, reverse); PWM define a velocidade.
+    // DIR defines the direction (forward, reverse); PWM defines the speed.
   _pinMLPWM = PIN_ML_PWM;
   _pinMLDIR = PIN_ML_DIR;
   _pinMRPWM = PIN_MR_PWM;
@@ -29,7 +36,7 @@ GhettobotMotors::GhettobotMotors() {
   pinMode(_pinMRDIR, OUTPUT);
 }
 
-// Basicamente o mesmo que drive(), mas omitindo o motor direito.
+// Basically the same as drive(), but omitting the right motor.
 void GhettobotMotors::rightDrive(int speed, boolean direction) {
   speed = speed > 100 ? 100 : speed < 0 ? 0 : speed;
   speed = map(speed, 0, 100, 0, 255);
@@ -37,7 +44,7 @@ void GhettobotMotors::rightDrive(int speed, boolean direction) {
   analogWrite(_pinMRPWM, speed);
 }
 
-// Basicamente o mesmo que drive(), mas omitindo o motor esquerdo.
+// Basically the same as drive, but omitting the left motor.
 void GhettobotMotors::leftDrive(int speed, boolean direction) {
   speed = speed > 100 ? 100 : speed < 0 ? 0 : speed;
   speed = map(speed, 0, 100, 0, 255);
@@ -45,31 +52,30 @@ void GhettobotMotors::leftDrive(int speed, boolean direction) {
   analogWrite(_pinMLPWM, speed);
 }
 
-// Para o motor esquerdo
+// Stop funcions for the each motor
 void GhettobotMotors::leftStop() {
   analogWrite(_pinMLPWM, 0);
 }
-// Para o motor direito
+
 void GhettobotMotors::rightStop() {
   analogWrite(_pinMRPWM, 0);
 }
 
-// Para ambos os motores
+// Stop funcion for the both motors
 void GhettobotMotors::stop() {
   leftStop();
   rightStop();
 }
 
-// drive() inicia ambos motores.
-// A função primeiramente determina qual direção os motores
-// devem seguir, para frente ou para trás em seguida chama
-// as seguintes funções individuais adequadas
+// drive() starts both motors. It figures out whether the motors should go
+//  forward or revers, then calls the appropriate individual functions.
 void GhettobotMotors::drive(int speed, boolean direction) {
   leftDrive(speed, direction);
   rightDrive(speed, direction);
 }
 
-// Essa variação de this drive() integra a duração de delay
+// this variant of drive() integrates a delay duration to allow for single
+// commmand instruction.
 void GhettobotMotors::drive(int speed, boolean direction, int duration) {
   drive(speed, direction);
   delay(duration);

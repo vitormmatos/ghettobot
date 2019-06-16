@@ -12,4 +12,3 @@ Right now it's using [Arduino Julieta](https://www.amazon.com/RoboCore-Julieta-V
 Ghettobot is now in currently in it's fourth hardware revision, as we call: **Ghettobot Mark IV**  
 
 ![Mark IV](https://i.postimg.cc/25K19BxG/a55.png)
-
