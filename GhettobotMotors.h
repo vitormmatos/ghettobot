@@ -10,12 +10,6 @@
 #define PIN_MR_PWM   6
 #define PIN_MR_DIR   8
 
-// Constantes de direção para as funções dos motores
-#define BACKWARD  1
-#define FORWARD 0
-#define RIGHT 0
-#define LEFT 1
-
 // Motors functions directions constants
 #define BACKWARD  0
 #define FORWARD 1
